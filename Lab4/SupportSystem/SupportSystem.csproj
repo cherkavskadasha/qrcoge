@@ -53,6 +53,11 @@
     <Compile Include="MementoPattern\TextDocument.cs" />
     <Compile Include="MementoPattern\TextDocumentSnapshot.cs" />
     <Compile Include="MementoPattern\TextEditor.cs" />
+    <Compile Include="ObserverPattern\ConsoleLogger.cs" />
+    <Compile Include="ObserverPattern\LightHTML\Button.cs" />
+    <Compile Include="ObserverPattern\LightHTML\Div.cs" />
+    <Compile Include="ObserverPattern\LightHTML\HtmlElement.cs" />
+    <Compile Include="ObserverPattern\LightHTML\IEventListener.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserSupport\AbstractSupportHandler.cs" />

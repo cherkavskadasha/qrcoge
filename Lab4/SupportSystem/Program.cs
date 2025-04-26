@@ -1,7 +1,7 @@
 ﻿using System;
-using SupportSystem.UserSupport;
-using AirTraffic;
 using SupportSystem.MementoPattern;
+using SupportSystem.ObserverPattern.LightHTML;
+using SupportSystem.ObserverPattern;
 
 namespace SupportSystem
 {
@@ -66,38 +66,47 @@ namespace SupportSystem
             Console.WriteLine("\n--- Завдання 5: Мементо ---");
             TextEditor editor = new TextEditor();
             History history = new History();
-
-            editor.Write("Перший рядок.");
+            editor.Write("Початок документу.");
             history.Push(editor.Save());
-
-            editor.Write(" Другий рядок.");
-            history.Push(editor.Save());
-
-            editor.Write(" Третій рядок.");
+            editor.Write(" Додано текст.");
             Console.WriteLine($"Поточний документ: \"{editor.Document.Content}\"");
-
-            Console.WriteLine("\n--- Скасування ---");
             TextDocumentSnapshot snapshot1 = history.Pop();
-            if (snapshot1 != null)
-            {
-                editor.Restore(snapshot1);
-            }
-            Console.WriteLine($"Поточний документ після скасування: \"{editor.Document.Content}\"");
-
-            Console.WriteLine("\n--- Ще одне скасування ---");
+            if (snapshot1 != null) editor.Restore(snapshot1);
+            Console.WriteLine($"Документ після скасування: \"{editor.Document.Content}\"");
             TextDocumentSnapshot snapshot2 = history.Pop();
-            if (snapshot2 != null)
-            {
-                editor.Restore(snapshot2);
-            }
-            Console.WriteLine($"Поточний документ після ще одного скасування: \"{editor.Document.Content}\"");
-
-            Console.WriteLine("\n--- Спроба скасувати, коли історія порожня ---");
+            if (snapshot2 != null) editor.Restore(snapshot2);
+            Console.WriteLine($"Документ після ще одного скасування: \"{editor.Document.Content}\"");
             TextDocumentSnapshot snapshot3 = history.Pop();
-            if (snapshot3 != null)
-            {
-                editor.Restore(snapshot3);
-            }
+            if (snapshot3 != null) editor.Restore(snapshot3);
+
+            Console.WriteLine("\n--- Завдання 3: Спостерігач ---");
+
+            Div divElement = new Div("Привіт!");
+            Button buttonElement = new Button("Натисни мене");
+
+            ConsoleLogger logger1 = new ConsoleLogger("Логер 1");
+            ConsoleLogger logger2 = new ConsoleLogger("Логер 2");
+
+            divElement.AddEventListener("click", logger1);
+            buttonElement.AddEventListener("click", logger2);
+            divElement.AddEventListener("mouseover", logger2);
+
+            Console.WriteLine("\nІмітація кліку на DIV:");
+            divElement.SimulateClick();
+
+            Console.WriteLine("\nІмітація наведення миші на DIV:");
+            divElement.SimulateMouseOver();
+
+            Console.WriteLine("\nІмітація кліку на BUTTON:");
+            buttonElement.SimulateClick();
+
+            Console.WriteLine("\nВидалення слухача 'click' з BUTTON:");
+            buttonElement.RemoveEventListener("click", logger2);
+            Console.WriteLine("\nІмітація кліку на BUTTON після видалення слухача:");
+            buttonElement.SimulateClick();
+
+            Console.WriteLine("\nРендер DIV: " + divElement.Render());
+            Console.WriteLine("\nРендер BUTTON: " + buttonElement.Render());
 
             Console.ReadKey();
         }
