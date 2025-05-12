@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SupportSystem.ObserverPattern.LightHTML
+﻿namespace SupportSystem.ObserverPattern.LightHTML
 {
-    internal class NetworkImageLoadStrategy
+    public class NetworkImageLoadStrategy : IImageLoadStrategy
     {
+        public string Load(string href)
+        {
+            return $"Зображення з мережі: {href}";
+        }
     }
 }
