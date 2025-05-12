@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SupportSystem.ObserverPattern.LightHTML
+﻿namespace SupportSystem.ObserverPattern.LightHTML
 {
-    internal class FileImageLoadStrategy
+    public class FileImageLoadStrategy : IImageLoadStrategy
     {
+        public string Load(string href)
+        {
+            string filePath = href.Substring("file://".Length);
+            return $"Зображення з файлу: {filePath}";
+        }
     }
 }

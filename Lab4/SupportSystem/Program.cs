@@ -9,6 +9,7 @@ namespace SupportSystem
     {
         static void Main(string[] args)
         {
+            // --- Завдання 1: Ланцюжок відповідальностей ---
             Console.WriteLine("--- Завдання 1: Ланцюжок відповідальностей ---");
             UserSupport.SupportSystem supportSystem = new UserSupport.SupportSystem();
             while (true)
@@ -39,6 +40,7 @@ namespace SupportSystem
                 }
             }
 
+            // --- Завдання 2: Посередник ---
             Console.WriteLine("\n--- Завдання 2: Посередник ---");
             AirTraffic.AirTrafficControl airTrafficControl = new AirTraffic.AirTrafficControl();
             AirTraffic.Runway runway1 = new AirTraffic.Runway();
@@ -63,6 +65,7 @@ namespace SupportSystem
             Console.WriteLine("\n--- Спроба зльоту не з тієї смуги ---");
             aircraft3.RequestTakeOff(runway1);
 
+            // --- Завдання 5: Мементо ---
             Console.WriteLine("\n--- Завдання 5: Мементо ---");
             TextEditor editor = new TextEditor();
             History history = new History();
@@ -79,34 +82,42 @@ namespace SupportSystem
             TextDocumentSnapshot snapshot3 = history.Pop();
             if (snapshot3 != null) editor.Restore(snapshot3);
 
+            // --- Завдання 3: Спостерігач ---
             Console.WriteLine("\n--- Завдання 3: Спостерігач ---");
-
             Div divElement = new Div("Привіт!");
             Button buttonElement = new Button("Натисни мене");
-
             ConsoleLogger logger1 = new ConsoleLogger("Логер 1");
             ConsoleLogger logger2 = new ConsoleLogger("Логер 2");
-
             divElement.AddEventListener("click", logger1);
             buttonElement.AddEventListener("click", logger2);
             divElement.AddEventListener("mouseover", logger2);
-
             Console.WriteLine("\nІмітація кліку на DIV:");
             divElement.SimulateClick();
-
             Console.WriteLine("\nІмітація наведення миші на DIV:");
             divElement.SimulateMouseOver();
-
             Console.WriteLine("\nІмітація кліку на BUTTON:");
             buttonElement.SimulateClick();
-
-            Console.WriteLine("\nВидалення слухача 'click' з BUTTON:");
             buttonElement.RemoveEventListener("click", logger2);
             Console.WriteLine("\nІмітація кліку на BUTTON після видалення слухача:");
             buttonElement.SimulateClick();
-
             Console.WriteLine("\nРендер DIV: " + divElement.Render());
             Console.WriteLine("\nРендер BUTTON: " + buttonElement.Render());
+
+            // --- Завдання 4: Стратегія ---
+            Console.WriteLine("\n--- Завдання 4: Стратегія ---");
+
+            Image fileImage = new Image("file://my_image.png");
+            Image networkImage = new Image("https://example.com/image.jpg");
+            Image unknownImage = new Image("ftp://some_url");
+
+            Console.WriteLine($"\nЗавантаження fileImage: {fileImage.LoadImage()}");
+            Console.WriteLine($"Рендер fileImage: {fileImage.Render()}");
+
+            Console.WriteLine($"\nЗавантаження networkImage: {networkImage.LoadImage()}");
+            Console.WriteLine($"Рендер networkImage: {networkImage.Render()}");
+
+            Console.WriteLine($"\nЗавантаження unknownImage: {unknownImage.LoadImage()}");
+            Console.WriteLine($"Рендер unknownImage: {unknownImage.Render()}");
 
             Console.ReadKey();
         }

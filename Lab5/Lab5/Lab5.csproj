@@ -4,15 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{32319757-63C8-427E-B632-ECCA4614D737}</ProjectGuid>
+    <ProjectGuid>{BEF45329-28B3-452C-A42D-4A176079D7B3}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>SupportSystem</RootNamespace>
-    <AssemblyName>SupportSystem</AssemblyName>
+    <RootNamespace>Lab5</RootNamespace>
+    <AssemblyName>Lab5</AssemblyName>
     <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -44,34 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AirTraffic\Aircraft.cs" />
-    <Compile Include="AirTraffic\AirTrafficControl.cs" />
-    <Compile Include="AirTraffic\ControlTowerEntity.cs" />
-    <Compile Include="AirTraffic\IAirTrafficControl.cs" />
-    <Compile Include="AirTraffic\Runway.cs" />
-    <Compile Include="MementoPattern\History.cs" />
-    <Compile Include="MementoPattern\TextDocument.cs" />
-    <Compile Include="MementoPattern\TextDocumentSnapshot.cs" />
-    <Compile Include="MementoPattern\TextEditor.cs" />
-    <Compile Include="ObserverPattern\ConsoleLogger.cs" />
-    <Compile Include="ObserverPattern\LightHTML\Button.cs" />
-    <Compile Include="ObserverPattern\LightHTML\DefaultImageLoadStrategy.cs" />
-    <Compile Include="ObserverPattern\LightHTML\Div.cs" />
-    <Compile Include="ObserverPattern\LightHTML\FileImageLoadStrategy.cs" />
-    <Compile Include="ObserverPattern\LightHTML\HtmlElement.cs" />
-    <Compile Include="ObserverPattern\LightHTML\IEventListener.cs" />
-    <Compile Include="ObserverPattern\LightHTML\IImageLoadStrategy.cs" />
-    <Compile Include="ObserverPattern\LightHTML\Image.cs" />
-    <Compile Include="ObserverPattern\LightHTML\NetworkImageLoadStrategy.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserSupport\AbstractSupportHandler.cs" />
-    <Compile Include="UserSupport\ISupportHandler.cs" />
-    <Compile Include="UserSupport\Levels\Level1Support.cs" />
-    <Compile Include="UserSupport\Levels\Level2Support.cs" />
-    <Compile Include="UserSupport\Levels\Level3Support.cs" />
-    <Compile Include="UserSupport\Levels\Level4Support.cs" />
-    <Compile Include="UserSupport\SupportSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

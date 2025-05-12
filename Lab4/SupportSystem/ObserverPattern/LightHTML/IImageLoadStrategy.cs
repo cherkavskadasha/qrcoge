@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SupportSystem.ObserverPattern.LightHTML
+﻿namespace SupportSystem.ObserverPattern.LightHTML
 {
-    internal class IImageLoadStrategy
+    public interface IImageLoadStrategy
     {
+        string Load(string href);
     }
 }
