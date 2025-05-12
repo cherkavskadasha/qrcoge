@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lab5.Patterns
 {
-    internal class Iterator
+    public class HTMLElementCollection : IEnumerable<HTMLElement>
     {
+        private readonly List<HTMLElement> elements = new();
+
+        public void Add(HTMLElement element) => elements.Add(element);
+
+        public IEnumerator<HTMLElement> GetEnumerator() => elements.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }
