@@ -1,12 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lab5.Patterns
 {
-    internal class Visitor
+    public interface IVisitor
     {
+        void Visit(HTMLElement element);
+    }
+
+    public class StyleVisitor : IVisitor
+    {
+        public void Visit(HTMLElement element)
+        {
+            Console.WriteLine($"Applying style to: {element.Name}");
+        }
     }
 }
