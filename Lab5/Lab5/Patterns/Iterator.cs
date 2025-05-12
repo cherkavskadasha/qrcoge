@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Lab5.Patterns
 {
-    internal class TemplateMethod
+    internal class Iterator
     {
     }
 }
