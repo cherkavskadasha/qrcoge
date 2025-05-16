@@ -1,14 +1,42 @@
 ﻿<Window x:Class="Lab6.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:Lab6.Services"
-        Title="QR Code Generator" Height="400" Width="500">
-    <Grid>
-        <TextBox Name="ContentTextBox" Margin="20,20,20,0" Height="30" VerticalAlignment="Top"
-                 local:PlaceholderService.Placeholder="Enter text or URL" Tag="Enter text or URL"/>
+        Title="QR Code Generator" Height="600" Width="800">
 
-        <Button Content="Generate QR Code" Margin="20,60,20,0" Height="30" VerticalAlignment="Top" Click="GenerateQRCode"/>
-        <Image Name="QRCodeImage" Margin="20,100,20,0" Height="150" VerticalAlignment="Top"/>
-        <Button Content="View Saved QR Codes" Margin="20,270,20,0" Height="30" VerticalAlignment="Top" Click="ViewSavedQRCodes"/>
+    <Grid Margin="10">
+        <!-- Заголовок -->
+        <TextBlock Text="QR Code Generator" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+        <!-- Вибір типу QR-коду -->
+        <StackPanel Orientation="Vertical" VerticalAlignment="Top" Margin="0,40,0,0">
+            <TextBlock Text="Select QR Code Type:" Margin="0,0,0,5"/>
+            <ComboBox Name="QRCodeTypeComboBox" Height="30" SelectionChanged="QRCodeTypeChanged">
+                <ComboBoxItem Content="Text" IsSelected="True"/>
+                <ComboBoxItem Content="URL"/>
+                <ComboBoxItem Content="Wi-Fi"/>
+                <ComboBoxItem Content="Email"/>
+                <ComboBoxItem Content="Contact"/>
+            </ComboBox>
+        </StackPanel>
+
+        <!-- Поле вводу тексту або URL -->
+        <StackPanel Orientation="Vertical" Margin="0,100,0,0">
+            <TextBlock Text="Input Text/URL:" Margin="0,5,0,2"/>
+            <TextBox Name="ContentTextBox" Height="30" Margin="0,0,0,10" Visibility="Visible"/>
+        </StackPanel>
+
+        <!-- Поля для Wi-Fi QR-коду -->
+        <StackPanel Orientation="Vertical" Margin="0,160,0,0">
+            <TextBlock Text="Wi-Fi SSID:" Margin="0,5,0,2"/>
+            <TextBox Name="SSIDTextBox" Height="30" Margin="0,0,0,10" Visibility="Collapsed"/>
+            <TextBlock Text="Wi-Fi Password:" Margin="0,5,0,2"/>
+            <TextBox Name="PasswordTextBox" Height="30" Margin="0,0,0,10" Visibility="Collapsed"/>
+        </StackPanel>
+
+        <!-- Кнопки управління -->
+        <StackPanel Orientation="Horizontal" Margin="0,450,0,0" HorizontalAlignment="Center">
+            <Button Content="Generate QR Code" Height="35" Width="150" Margin="5" Click="GenerateQRCode"/>
+            <Button Content="View History" Height="35" Width="150" Margin="5" Click="ViewSavedQRCodes"/>
+        </StackPanel>
     </Grid>
 </Window>

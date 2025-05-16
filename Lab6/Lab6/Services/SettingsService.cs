@@ -20,7 +20,7 @@ namespace Lab6.Services
 
         public void SaveSettings<T>(T settings)
         {
-            string json = JsonConvert.SerializeObject(settings, Formatting.Indented);
+            string json = JsonConvert.SerializeObject(settings, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(SettingsFile, json);
         }
     }

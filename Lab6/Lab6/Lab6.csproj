@@ -84,12 +84,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Services\ContactQRCodeService.cs" />
     <Compile Include="Services\DatabaseService.cs" />
+    <Compile Include="Services\EmailQRCodeService.cs" />
     <Compile Include="Services\ExportService.cs" />
     <Compile Include="Services\PlaceholderService.cs" />
     <Compile Include="Services\PrintService.cs" />
     <Compile Include="Services\QRCodeService.cs" />
     <Compile Include="Services\SettingsService.cs" />
+    <Compile Include="Services\WiFiQRCodeService.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
