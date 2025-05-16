@@ -100,5 +100,24 @@ namespace Lab6.Services
             }
             return qrCodes;
         }
+
+        public List<string> GetQRCodesByType(string type)
+        {
+            var qrCodes = new List<string>();
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string selectQuery = $"SELECT * FROM QRCodes WHERE ContentType='{type}';";
+                var command = new SQLiteCommand(selectQuery, connection);
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        qrCodes.Add(reader["Content"].ToString());
+                    }
+                }
+            }
+            return qrCodes;
+        }
     }
 }
