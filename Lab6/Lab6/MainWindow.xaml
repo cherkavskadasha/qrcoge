@@ -1,17 +1,28 @@
 ﻿<Window x:Class="Lab6.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="QR Code Generator" Height="600" Width="800">
+        Title="QR Code Generator"
+        Width="800" Height="650"
+        Loaded="MainWindow_Loaded">
+    <Grid Margin="20" PreviewMouseLeftButtonDown="Grid_PreviewMouseLeftButtonDown">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-    <Grid Margin="10">
-        <!-- Заголовок -->
-        <TextBlock Text="QR Code Generator" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+        <TextBlock Grid.Row="0"
+                   Text="QR Code Generator"
+                   FontSize="28"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"/>
 
-        <!-- Вибір типу QR-коду -->
-        <StackPanel Orientation="Vertical" VerticalAlignment="Top" Margin="0,40,0,0">
-            <TextBlock Text="Select QR Code Type:" Margin="0,0,0,5"/>
-            <ComboBox Name="QRCodeTypeComboBox" Height="30" SelectionChanged="QRCodeTypeChanged">
-                <ComboBoxItem Content="Text" IsSelected="True"/>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,10">
+            <TextBlock Text="QR type:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <ComboBox x:Name="QRCodeTypeComboBox" Width="150" SelectionChanged="QRCodeTypeChanged">
+                <ComboBoxItem Content="Text"   IsSelected="True"/>
                 <ComboBoxItem Content="URL"/>
                 <ComboBoxItem Content="Wi-Fi"/>
                 <ComboBoxItem Content="Email"/>
@@ -19,24 +30,39 @@
             </ComboBox>
         </StackPanel>
 
-        <!-- Поле вводу тексту або URL -->
-        <StackPanel Orientation="Vertical" Margin="0,100,0,0">
-            <TextBlock Text="Input Text/URL:" Margin="0,5,0,2"/>
-            <TextBox Name="ContentTextBox" Height="30" Margin="0,0,0,10" Visibility="Visible"/>
+        <StackPanel Grid.Row="2" x:Name="InputPanel" Width="300" HorizontalAlignment="Center">
+            <TextBox x:Name="ContentTextBox"  Margin="0,3" Text="Введіть текст або URL"
+             GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+
+            <TextBox x:Name="SSIDTextBox"     Margin="0,3" Text="Введіть SSID"     Visibility="Collapsed"
+             GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+            <TextBox x:Name="PasswordTextBox" Margin="0,3" Text="Введіть пароль" Visibility="Collapsed"
+             GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+
+            <TextBox x:Name="EmailTextBox"    Margin="0,3" Text="Введіть Email"    Visibility="Collapsed"
+             GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+            <TextBox x:Name="SubjectTextBox"  Margin="0,3" Text="Введіть тему"  Visibility="Collapsed"
+             GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+
+            <TextBox x:Name="NameTextBox"     Margin="0,3" Text="Введіть ім'я"     Visibility="Collapsed"
+             GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+            <TextBox x:Name="PhoneTextBox"    Margin="0,3" Text="Введіть телефон"    Visibility="Collapsed"
+             GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
         </StackPanel>
 
-        <!-- Поля для Wi-Fi QR-коду -->
-        <StackPanel Orientation="Vertical" Margin="0,160,0,0">
-            <TextBlock Text="Wi-Fi SSID:" Margin="0,5,0,2"/>
-            <TextBox Name="SSIDTextBox" Height="30" Margin="0,0,0,10" Visibility="Collapsed"/>
-            <TextBlock Text="Wi-Fi Password:" Margin="0,5,0,2"/>
-            <TextBox Name="PasswordTextBox" Height="30" Margin="0,0,0,10" Visibility="Collapsed"/>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20">
+            <Button Content="Generate QR" Width="140" Margin="5" Click="GenerateQRCode"/>
+            <Button Content="View History" Width="140" Margin="5" Click="ViewSavedQRCodes"/>
+            <Button Content="Clear History" Width="140" Margin="5" Click="ClearHistory"/>
         </StackPanel>
 
-        <!-- Кнопки управління -->
-        <StackPanel Orientation="Horizontal" Margin="0,450,0,0" HorizontalAlignment="Center">
-            <Button Content="Generate QR Code" Height="35" Width="150" Margin="5" Click="GenerateQRCode"/>
-            <Button Content="View History" Height="35" Width="150" Margin="5" Click="ViewSavedQRCodes"/>
+        <StackPanel Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20">
+            <TextBlock Text="Generated QR Code:" HorizontalAlignment="Center"/>
+            <Border BorderBrush="Gray" BorderThickness="1" Padding="5" Margin="0,10">
+                <Image x:Name="QRCodeImage" Width="220" Height="220"
+                       Stretch="Uniform"
+                       SnapsToDevicePixels="True"/>
+            </Border>
         </StackPanel>
     </Grid>
 </Window>
