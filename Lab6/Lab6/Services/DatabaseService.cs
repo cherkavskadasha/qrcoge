@@ -1,123 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using System.IO;
 
 namespace Lab6.Services
 {
     public class DatabaseService
     {
-        private static string GetDatabasePath()
-        {
-            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            string dbPath = Path.Combine(baseDirectory, "qr_codes.db");
-
-            Console.WriteLine($"Database path: {dbPath}");
-
-            return dbPath;
-        }
-
-        private static string ConnectionString => $"Data Source={GetDatabasePath()};Version=3;";
+        private const string Conn = "Data Source=qr_codes.db;Version=3;";
 
         public void InitializeDatabase()
         {
-            try
+            using (var c = new SQLiteConnection(Conn))
             {
-                string dbPath = GetDatabasePath();
-                if (!File.Exists(dbPath))
-                {
-                    SQLiteConnection.CreateFile(dbPath);
-                    Console.WriteLine("Database file created!");
-                }
-
-                using (var connection = new SQLiteConnection(ConnectionString))
-                {
-                    connection.Open();
-                    string createTableQuery = @"CREATE TABLE IF NOT EXISTS QRCodes (
-                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        Content TEXT,
-                        FilePath TEXT,
-                        CreatedAt TEXT
-                    );";
-                    var command = new SQLiteCommand(createTableQuery, connection);
-                    command.ExecuteNonQuery();
-                    Console.WriteLine("Table created or already exists!");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error initializing database: {ex.Message}");
+                c.Open();
+                const string sql =
+                    @"CREATE TABLE IF NOT EXISTS QRCodes(
+                          Id        INTEGER PRIMARY KEY,
+                          Content   TEXT,
+                          FilePath  TEXT,
+                          CreatedAt TEXT
+                      );";
+                new SQLiteCommand(sql, c).ExecuteNonQuery();
             }
         }
 
-        public void SaveQRCode(string content, string filePath)
+        public void SaveQRCode(string content, string path)
         {
-            try
+            using (var c = new SQLiteConnection(Conn))
             {
-                using (var connection = new SQLiteConnection(ConnectionString))
-                {
-                    connection.Open();
-                    string insertQuery = "INSERT INTO QRCodes (Content, FilePath, CreatedAt) VALUES (@content, @filePath, @createdAt);";
-                    var command = new SQLiteCommand(insertQuery, connection);
-                    command.Parameters.AddWithValue("@content", content);
-                    command.Parameters.AddWithValue("@filePath", filePath);
-                    command.Parameters.AddWithValue("@createdAt", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                    command.ExecuteNonQuery();
-                    Console.WriteLine("QR code saved to database!");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error saving QR code to database: {ex.Message}");
+                c.Open();
+                var cmd = new SQLiteCommand(
+                    "INSERT INTO QRCodes(Content,FilePath,CreatedAt) VALUES(@c,@p,@t);", c);
+                cmd.Parameters.AddWithValue("@c", content);
+                cmd.Parameters.AddWithValue("@p", path);
+                cmd.Parameters.AddWithValue("@t", DateTime.Now.ToString("s"));
+                cmd.ExecuteNonQuery();
             }
         }
 
         public List<string> GetAllQRCodes()
         {
-            var qrCodes = new List<string>();
-            try
+            var list = new List<string>();
+            using (var c = new SQLiteConnection(Conn))
             {
-                using (var connection = new SQLiteConnection(ConnectionString))
-                {
-                    connection.Open();
-                    string selectQuery = "SELECT * FROM QRCodes;";
-                    var command = new SQLiteCommand(selectQuery, connection);
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            string content = reader["Content"].ToString();
-                            string filePath = reader["FilePath"].ToString();
-                            string createdAt = reader["CreatedAt"].ToString();
-                            qrCodes.Add($"Content: {content}, File: {filePath}, Created: {createdAt}");
-                        }
-                    }
-                }
+                c.Open();
+                var cmd = new SQLiteCommand("SELECT Content,CreatedAt FROM QRCodes;", c);
+                using (var r = cmd.ExecuteReader())
+                    while (r.Read())
+                        list.Add(string.Format("{0} — {1}", r["CreatedAt"], r["Content"]));
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error retrieving QR codes: {ex.Message}");
-            }
-            return qrCodes;
+            return list;
         }
 
-        public List<string> GetQRCodesByType(string type)
+        public void ClearAllQRCodes()
         {
-            var qrCodes = new List<string>();
-            using (var connection = new SQLiteConnection(ConnectionString))
+            using (var c = new SQLiteConnection(Conn))
             {
-                connection.Open();
-                string selectQuery = $"SELECT * FROM QRCodes WHERE ContentType='{type}';";
-                var command = new SQLiteCommand(selectQuery, connection);
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        qrCodes.Add(reader["Content"].ToString());
-                    }
-                }
+                c.Open();
+                new SQLiteCommand("DELETE FROM QRCodes;", c).ExecuteNonQuery();
             }
-            return qrCodes;
         }
     }
 }

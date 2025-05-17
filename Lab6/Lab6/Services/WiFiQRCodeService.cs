@@ -1,30 +1,20 @@
 ﻿using QRCoder;
-using System;
+using System.Drawing;
 
 namespace Lab6.Services
 {
     public class WiFiQRCodeService
     {
-        public string GenerateWiFiQRCode(string ssid, string password, string encryption, string filePath)
+        public void GenerateWiFiQRCode(string ssid, string password, string encryption, string filePath)
         {
-            try
-            {
-                QRCodeGenerator qrGenerator = new QRCodeGenerator();
-                string wifiString = $"WIFI:T:{encryption};S:{ssid};P:{password};;";
-                QRCodeData qrCodeData = qrGenerator.CreateQrCode(wifiString, QRCodeGenerator.ECCLevel.Q);
-                QRCode qrCode = new QRCode(qrCodeData);
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            string wifiString = $"WIFI:T:{encryption};S:{ssid};P:{password};;";
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(wifiString, QRCodeGenerator.ECCLevel.Q);
+            QRCode qrCode = new QRCode(qrCodeData);
 
-                using (var bitmap = qrCode.GetGraphic(20))
-                {
-                    bitmap.Save(filePath, System.Drawing.Imaging.ImageFormat.Png);
-                }
-
-                return filePath;
-            }
-            catch (Exception ex)
+            using (Bitmap bitmap = qrCode.GetGraphic(20))
             {
-                Console.WriteLine($"Error generating WiFi QR code: {ex.Message}");
-                return null;
+                bitmap.Save(filePath);
             }
         }
     }
