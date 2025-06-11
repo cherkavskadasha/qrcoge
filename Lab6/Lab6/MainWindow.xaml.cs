@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
@@ -9,68 +9,101 @@ using Lab6.Services;
 
 namespace Lab6
 {
+    // Інтерфейс стратегії
+    public interface IQRCodeTypeStrategy
+    {
+        void ApplyVisibility(MainWindow window);
+    }
+
+    // Реалізації стратегій для кожного типу
+    public class TextOrUrlStrategy : IQRCodeTypeStrategy
+    {
+        public void ApplyVisibility(MainWindow window)
+        {
+            window.SetVisibility(new[] { window.ContentTextBox }, Visibility.Visible);
+        }
+    }
+
+    public class WifiStrategy : IQRCodeTypeStrategy
+    {
+        public void ApplyVisibility(MainWindow window)
+        {
+            window.SetVisibility(new[] { window.SSIDTextBox, window.PasswordTextBox }, Visibility.Visible);
+        }
+    }
+
+    public class EmailStrategy : IQRCodeTypeStrategy
+    {
+        public void ApplyVisibility(MainWindow window)
+        {
+            window.SetVisibility(new[] { window.EmailTextBox, window.SubjectTextBox }, Visibility.Visible);
+        }
+    }
+
+    public class ContactStrategy : IQRCodeTypeStrategy
+    {
+        public void ApplyVisibility(MainWindow window)
+        {
+            window.SetVisibility(new[] { window.NameTextBox, window.PhoneTextBox }, Visibility.Visible);
+        }
+    }
+
     public partial class MainWindow : Window
     {
         private readonly QRCodeService _qrService = new QRCodeService();
         private readonly DatabaseService _dbService = new DatabaseService();
 
+        // Зберігаємо всі можливі UI елементи для швидкого приховування
+        private readonly UIElement[] _allInputElements;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            _allInputElements = new UIElement[]
+            {
+                ContentTextBox, SSIDTextBox, PasswordTextBox,
+                EmailTextBox, SubjectTextBox,
+                NameTextBox, PhoneTextBox
+            };
         }
 
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            TextBox textBox = sender as TextBox;
-            if (textBox != null && textBox.Tag == null) // Зберігаємо початковий текст як Tag
+            if (sender is TextBox textBox && textBox.Tag == null)
             {
-                textBox.Tag = textBox.Text; // Зберігаємо початковий текст (плейсхолдер) у Tag
-                textBox.Text = ""; // Очищаємо поле
+                textBox.Tag = textBox.Text;
+                textBox.Text = "";
             }
         }
 
         private void TextBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            TextBox textBox = sender as TextBox;
-            if (textBox != null && string.IsNullOrWhiteSpace(textBox.Text))
+            if (sender is TextBox textBox && string.IsNullOrWhiteSpace(textBox.Text))
             {
-                textBox.Text = textBox.Tag?.ToString(); // Повертаємо плейсхолдер з Tag, якщо поле пусте
-                textBox.Tag = null; // Очищаємо Tag
+                textBox.Text = textBox.Tag?.ToString();
+                textBox.Tag = null;
             }
         }
 
         private void Grid_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            // Перевіряємо, чи елемент, який має фокус, є TextBox
-            if (Keyboard.FocusedElement is TextBox focusedTextBox)
+            if (Keyboard.FocusedElement is TextBox focusedTextBox && !focusedTextBox.IsMouseOver)
             {
-                // Перевіряємо, чи клікнули не по самому TextBox
-                // Якщо клікнули по TextBox, то фокус вже не зніматимемо
-                // e.OriginalSource представляє елемент, який був клікнутий
-                if (!focusedTextBox.IsMouseOver)
-                {
-                    // Примусово переміщуємо фокус на головний Grid
-                    // Це знімає фокус з будь-якого поточного елемента, що має фокус.
-                    // Важливо: Grid повинен бути Focusable=true, але для більшості панелей це працює за замовчуванням.
-                    // Якщо не працює, можна встановити Keyboard.Focus(this); (фокус на вікно)
-                    Keyboard.ClearFocus(); // Більш загальний спосіб зняти фокус
-                    e.Handled = true; // Позначаємо подію як оброблену, щоб вона не поширювалась далі
-                }
+                Keyboard.ClearFocus();
+                e.Handled = true;
             }
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             _dbService.InitializeDatabase();
-            ResetVisibility(); 
+            ResetVisibility();
 
             if (QRCodeTypeComboBox.SelectedItem is ComboBoxItem selectedItem)
             {
-                string type = selectedItem.Content.ToString();
-                if (type == "Text" || type == "URL")
-                {
-                    SafeSetVisibility(ContentTextBox, Visibility.Visible);
-                }
+                var strategy = GetStrategyByType(selectedItem.Content.ToString());
+                strategy?.ApplyVisibility(this);
             }
         }
 
@@ -140,41 +173,36 @@ namespace Lab6
 
             if (QRCodeTypeComboBox.SelectedItem is ComboBoxItem selectedItem)
             {
-                string type = selectedItem.Content.ToString();
-
-                switch (type)
-                {
-                    case "Text":
-                    case "URL":
-                        SafeSetVisibility(ContentTextBox, Visibility.Visible);
-                        break;
-                    case "Wi-Fi":
-                        SafeSetVisibility(SSIDTextBox, Visibility.Visible);
-                        SafeSetVisibility(PasswordTextBox, Visibility.Visible);
-                        break;
-                    case "Email":
-                        SafeSetVisibility(EmailTextBox, Visibility.Visible);
-                        SafeSetVisibility(SubjectTextBox, Visibility.Visible);
-                        break;
-                    case "Contact":
-                        SafeSetVisibility(NameTextBox, Visibility.Visible);
-                        SafeSetVisibility(PhoneTextBox, Visibility.Visible);
-                        break;
-                }
+                var strategy = GetStrategyByType(selectedItem.Content.ToString());
+                strategy?.ApplyVisibility(this);
             }
         }
 
+        private IQRCodeTypeStrategy GetStrategyByType(string type) => type switch
+        {
+            "Text" or "URL" => new TextOrUrlStrategy(),
+            "Wi-Fi" => new WifiStrategy(),
+            "Email" => new EmailStrategy(),
+            "Contact" => new ContactStrategy(),
+            _ => null
+        };
+
         private void ResetVisibility()
         {
-            SafeSetVisibility(ContentTextBox, Visibility.Collapsed);
-            SafeSetVisibility(SSIDTextBox, Visibility.Collapsed);
-            SafeSetVisibility(PasswordTextBox, Visibility.Collapsed);
-            SafeSetVisibility(EmailTextBox, Visibility.Collapsed);
-            SafeSetVisibility(SubjectTextBox, Visibility.Collapsed);
-            SafeSetVisibility(NameTextBox, Visibility.Collapsed);
-            SafeSetVisibility(PhoneTextBox, Visibility.Collapsed);
+            SetVisibility(_allInputElements, Visibility.Collapsed);
         }
 
+        // Метод, щоб задавати видимість відразу для кількох елементів
+        public void SetVisibility(UIElement[] elements, Visibility visibility)
+        {
+            foreach (var element in elements)
+            {
+                if (element != null)
+                    element.Visibility = visibility;
+            }
+        }
+
+        // Альтернативний метод для одиночного елемента (можна залишити приватним, якщо не хочеш робити публічним)
         private void SafeSetVisibility(UIElement element, Visibility visibility)
         {
             if (element != null)
